@@ -1,10 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Navigation } from "@/components/ui/navigation";
 import { DashboardTab } from "@/components/dashboard/DashboardTab";
-import { QueueTab } from "@/components/dashboard/QueueTab";
+import QueueTab from "@/components/dashboard/QueueTab";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const { user, loading, signOut, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      navigate('/auth');
+    }
+  }, [loading, isAuthenticated, navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-lg">กำลังโหลด...</div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   const renderContent = () => {
     switch (activeTab) {
@@ -46,11 +69,21 @@ const Index = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-background">
-      <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
-      <main className="flex-1 p-6 overflow-auto">
-        {renderContent()}
-      </main>
+    <div className="min-h-screen bg-background">
+      <div className="flex">
+        <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
+        <main className="flex-1 p-8">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-bold">
+              ยินดีต้อนรับ, {user?.email}
+            </h1>
+            <Button variant="outline" onClick={signOut}>
+              ออกจากระบบ
+            </Button>
+          </div>
+          {renderContent()}
+        </main>
+      </div>
     </div>
   );
 };

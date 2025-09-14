@@ -8,9 +8,9 @@ interface QueueItem {
   id: string;
   number: number;
   name: string;
-  phone: string;
+  phone?: string;
   service: string;
-  status: "waiting" | "called" | "serving" | "completed" | "cancelled";
+  status: "waiting" | "called" | "completed" | "cancelled";
   createdAt: string;
   estimatedTime?: string;
 }
@@ -25,7 +25,6 @@ interface QueueCardProps {
 const statusConfig = {
   waiting: { label: "รอคิว", className: "bg-warning/10 text-warning border-warning/20" },
   called: { label: "เรียกแล้ว", className: "bg-secondary/10 text-secondary border-secondary/20" },
-  serving: { label: "กำลังให้บริการ", className: "bg-primary/10 text-primary border-primary/20" },
   completed: { label: "เสร็จสิ้น", className: "bg-success/10 text-success border-success/20" },
   cancelled: { label: "ยกเลิก", className: "bg-destructive/10 text-destructive border-destructive/20" },
 };
@@ -52,10 +51,12 @@ export const QueueCard = ({ queue, onCallQueue, onCompleteQueue, onCancelQueue }
         </div>
         
         <div className="space-y-2 mb-4">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Phone className="w-4 h-4" />
-            <span>{queue.phone}</span>
-          </div>
+          {queue.phone && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Phone className="w-4 h-4" />
+              <span>{queue.phone}</span>
+            </div>
+          )}
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Clock className="w-4 h-4" />
             <span>เวลาจอง: {new Date(queue.createdAt).toLocaleTimeString('th-TH')}</span>

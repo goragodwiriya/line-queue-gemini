@@ -14,16 +14,157 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      customers: {
+        Row: {
+          created_at: string
+          id: string
+          line_user_id: string | null
+          name: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          line_user_id?: string | null
+          name: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          line_user_id?: string | null
+          name?: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      queues: {
+        Row: {
+          called_at: string | null
+          completed_at: string | null
+          created_at: string
+          customer_id: string | null
+          estimated_time: string | null
+          id: string
+          number: number
+          service_id: string | null
+          status: Database["public"]["Enums"]["queue_status"]
+          updated_at: string
+        }
+        Insert: {
+          called_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          customer_id?: string | null
+          estimated_time?: string | null
+          id?: string
+          number: number
+          service_id?: string | null
+          status?: Database["public"]["Enums"]["queue_status"]
+          updated_at?: string
+        }
+        Update: {
+          called_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          customer_id?: string | null
+          estimated_time?: string | null
+          id?: string
+          number?: number
+          service_id?: string | null
+          status?: Database["public"]["Enums"]["queue_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "queues_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "queues_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      services: {
+        Row: {
+          created_at: string
+          estimated_duration: number | null
+          id: string
+          is_active: boolean | null
+          name: string
+          type: Database["public"]["Enums"]["service_type"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          estimated_duration?: number | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          type?: Database["public"]["Enums"]["service_type"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          estimated_duration?: number | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          type?: Database["public"]["Enums"]["service_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      settings: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          key: string
+          updated_at: string
+          value: Json | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          key: string
+          updated_at?: string
+          value?: Json | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          key?: string
+          updated_at?: string
+          value?: Json | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_queue_number: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
     }
     Enums: {
-      [_ in never]: never
+      queue_status: "waiting" | "called" | "completed" | "cancelled"
+      service_type: "general" | "consultation" | "treatment" | "emergency"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +291,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      queue_status: ["waiting", "called", "completed", "cancelled"],
+      service_type: ["general", "consultation", "treatment", "emergency"],
+    },
   },
 } as const
